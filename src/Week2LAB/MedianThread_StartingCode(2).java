@@ -1,32 +1,22 @@
 package Week2LAB;
 
-import com.sun.deploy.util.ArrayUtil;
-
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.IntSummaryStatistics;
+import java.util.Scanner;
 
 
 class MedianThread {
 
-	public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException  {
+	public static void main(String[] args) throws InterruptedException, IOException  {
 		// TODO: read data from external file and store it in an array
 		// Note: you should pass the file as a first command line argument at runtime.
-		//System.out.println(args[0]);
-		String a=null;
-		String fname = "input.txt";
-		fname = args[0];
-		BufferedReader f = new BufferedReader(new FileReader(fname));
+		String filename = args[0];
 		ArrayList<Integer> text = new ArrayList<>();
-		System.out.println("parsing file now");
-		a = f.readLine();
-		for(String s: a.split(" ")) {
-			//System.out.println(s);
-			text.add(Integer.parseInt(s));
+		Scanner sc = new Scanner(new File(filename));
+		while (sc.hasNext()) {
+			text.add(sc.nextInt());
 		}
-		System.out.println("Text is: "+text);
 
 	// define number of threads
 	int NumOfThread = Integer.valueOf(args[1]);// this way, you can pass number of threads as
@@ -56,10 +46,8 @@ class MedianThread {
 	    // its repective subarray. For example,
 
 	ArrayList<MedianMultiThread> threads= new ArrayList<>();
-	ctr = 0;
 	for(ArrayList<Integer> u: subArrays) {
 		threads.add(new MedianMultiThread(u));
-		System.out.println(threads.get(ctr++).getInternal().size());
 	}
 		System.out.println("ADDED THREADS");
 	//Tip: you can't create big number of threads in the above way. So, create an array list of threads.
@@ -72,145 +60,120 @@ class MedianThread {
 			m.join(); //start thread1 on from run() function
 		}
 
-		for(MedianMultiThread m: threads){
-			System.out.println(m.getInternal());
-		}
-
-		System.out.println("MERGIN BEGINS");
-
 
 	// TODO: use any merge algorithm to merge the sorted subarrays and store it to another array, e.g., sortedFullArray.
-	ArrayList<Integer> bigArray = new ArrayList<>();
-	ArrayList<Integer> smolBig = new ArrayList<>();
-	ArrayList<Integer> tempr;
-	ArrayList<Integer> curr;
-	smolBig = threads.get(0).getInternal();
-	for (MedianMultiThread k: threads){
-		int ctr1 = 0;
-		int ctr2 = 0;
-		tempr = new ArrayList<>();
-		curr = k.getInternal();
-		while(ctr1!=smolBig.size()+1 && ctr2!=curr.size()+1){
-			if(ctr1==smolBig.size()+1){
-				tempr.add(curr.get(ctr2));
-				ctr2++;
-			}
-			else if(ctr2==curr.size()+1){
-				tempr.add(smolBig.get(ctr1));
-				ctr1++;
-			}
-			else {
-				if (smolBig.get(ctr1) < curr.get(ctr2)) {
-					tempr.add(smolBig.get(ctr1));
-					ctr1++;
-				} else {
-					tempr.add(curr.get(ctr2));
-					ctr2++;
-				}
-			}
+		Integer[] bigArray = new Integer[text.size()];
+		Integer[] tempArray = new Integer[text.size()];
+		int alen = 0;
+		for(MedianMultiThread m: threads){
+			merge(tempArray, bigArray,m.getInternal(),alen);
+			bigArray = tempArray;
+			tempArray = new Integer[text.size()];
+			alen = alen+m.getInternal().length;
 		}
-		bigArray = tempr;
-		smolBig = bigArray;
-	}
 
 	//TODO: get median from sortedFullArray
 		double median = computeMedian(bigArray);
 
-	    //e.g, computeMedian(sortedFullArray);
-
 	// TODO: stop recording time and compute the elapsed time
-		long runningTime = (System.nanoTime() - initTime)% 1000000;
+		long runningTime = (System.nanoTime() - initTime);
 
 	// TODO: printout the final sorted array
-		System.out.println(bigArray);
+		System.out.println(Arrays.toString(bigArray));
 
 	// TODO: printout median
 	System.out.println("The Median value is "+median);
-	System.out.println("Running time is " + runningTime + " milliseconds\n");
+	System.out.println("Running time is " + runningTime/1000000000.0 + " seconds\n");
 	}
 
-	public static double computeMedian(ArrayList<Integer> bigArray) {
+
+	private static double computeMedian(Integer[] bigArray) {
 	  //TODO: implement your function that computes median of values of an array
 		double median;
-		if (bigArray.size() % 2 == 0)
-			median = ((double)bigArray.get(bigArray.size()/2) + (double)bigArray.get(bigArray.size()/2-1))/2;
+		if ((bigArray.length) % 2 == 0)
+			median = (bigArray[bigArray.length/2] + bigArray[bigArray.length/2-1])/2.0;
 		else
-			median = (double)bigArray.get(bigArray.size()/2);
+			median = bigArray[bigArray.length/2];
 		return median;
 	}
+
+	private static void merge(Integer[] dest, Integer[] a, Integer[] b,int alen) {
+		Integer i = 0;
+		Integer j = 0;
+		while(i < alen && j < b.length) {
+			if(a[i] < b[j]) {
+				dest[i + j] = a[i];
+				++i;
+			} else {
+				dest[i + j] = b[j];
+				++j;
+			}
+		}
+		for(; i < alen; i++) dest[i + j] = a[i];
+		for(; j < b.length; j++) dest[i + j] = b[j];
+	}
+
 
 }
 
 // extend Thread
 class MedianMultiThread extends Thread {
-	private ArrayList<Integer> list;
+	private Integer[] list;
 
-	public ArrayList<Integer> getInternal() {
+	public Integer[] getInternal() {
 		return list;
 	}
 
 	MedianMultiThread(ArrayList<Integer> array) {
-		list = array;
+		list = array.toArray(new Integer[array.size()]);
 	}
 
 	public void run() {
 		// called by object.start()
-		int left = 0;
-		int right = list.size()-1;
-		int a[] = new int[list.size()];
-		int[] arr = new int[list.size()];
-		for(int i = 0; i < list.size(); i++) {
-			if (list.get(i) != null) {
-				arr[i] = list.get(i);
+		mergeSort(list);
+	}
+
+	// TODO: implement merge sort here, recursive algorithm
+	public void mergeSort(Integer[] elts) {
+
+		if (elts.length > 1) {
+			// split the array into two pieces, as close to the same
+			// size as possible.
+			Integer[] first = extract(elts, 0, elts.length / 2);
+			Integer[] last = extract(elts, elts.length / 2, elts.length);
+
+			// sort each of the two halves recursively
+			mergeSort(first);
+			mergeSort(last);
+
+			// merge the two sorted halves together
+			merge(elts, first, last);
+		}
+	}
+
+		private static Integer[] extract(Integer[] elts, Integer start, Integer last) {
+			Integer[] ret = new Integer[last - start];
+			for(int i = 0; i < ret.length; i++) ret[i] = elts[start + i];
+			return ret;
+		}
+
+	public static void merge(Integer[] dest, Integer[] a, Integer[] b) {
+		Integer i = 0;
+		Integer j = 0;
+		while(i < a.length && j < b.length) {
+			if(a[i] < b[j]) {
+				dest[i + j] = a[i];
+				++i;
+			} else {
+				dest[i + j] = b[j];
+				++j;
 			}
 		}
-		MergeSort_Recursive(a,left,right);
+		for(; i < a.length; i++) dest[i + j] = a[i];
+		for(; j < b.length; j++) dest[i + j] = b[j];
 	}
 
 
-
-	static public void DoMerge(int [] numbers, int left, int mid, int right)
-	{
-		int [] temp = new int[25];
-		int i, left_end, num_elements, tmp_pos;
-
-		left_end = (mid - 1);
-		tmp_pos = left;
-		num_elements = (right - left + 1);
-
-		while ((left <= left_end) && (mid <= right))
-		{
-			if (numbers[left] <= numbers[mid])
-				temp[tmp_pos++] = numbers[left++];
-			else
-				temp[tmp_pos++] = numbers[mid++];
-		}
-
-		while (left <= left_end)
-			temp[tmp_pos++] = numbers[left++];
-
-		while (mid <= right)
-			temp[tmp_pos++] = numbers[mid++];
-
-		for (i = 0; i < num_elements; i++)
-		{
-			numbers[right] = temp[right];
-			right--;
-		}
 	}
 
-	static public void MergeSort_Recursive(int [] numbers, int left, int right)
-	{
-		int mid;
 
-		if (right > left)
-		{
-			mid = (right + left) / 2;
-			MergeSort_Recursive(numbers, left, mid);
-			MergeSort_Recursive(numbers, (mid + 1), right);
-
-			DoMerge(numbers, left, (mid+1), right);
-		}
-	}
-
-}
