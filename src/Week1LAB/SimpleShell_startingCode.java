@@ -95,6 +95,10 @@ class SimpleShell {
                         System.out.println("Your command is not recognized! Enter again!");
                     }
                     break;
+
+                case "history":
+
+                    break;
             }
 
 
