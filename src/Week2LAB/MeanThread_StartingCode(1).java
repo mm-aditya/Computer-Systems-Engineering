@@ -7,18 +7,20 @@ import java.util.Scanner;
 
 class MeanThread {
 	public static void main(String[] args) throws InterruptedException, FileNotFoundException {
+
 		// TODO: read data from external file and store it in an array
-		       // Note: you should pass the file as a first command line argument at runtime.
+        // Note: you should pass the file as a first command line argument at runtime.
+
         String filename = args[0];
         ArrayList<Integer> bossArray = new ArrayList<>();
         Scanner sc = new Scanner(new File(filename));
         while (sc.hasNext()) {
             bossArray.add(sc.nextInt());
         }
-
 		// define number of threads
 		int NumOfThread = Integer.valueOf(args[1]);// this way, you can pass number of threads as
-		     // a second command line argument at runtime.
+                                                   // a second command line argument at runtime.
+
 
 		// TODO: partition the array list into N subArrays, where N is the number of threads
 
@@ -36,24 +38,21 @@ class MeanThread {
             if(ctr==bossArray.size())
                 flag=1;
         }
-        System.out.println("DONE PARTITIONING\n");
+
+
 
 		// TODO: start recording time
         long initTime = System.nanoTime();
 
-		// TODO: create N threads and assign subArrays to the threads so that each thread computes mean of
-		    // its repective subarray. For example,
+		// TODO: create N threads and assign subArrays to the threads so that each thread computes mean of its repective subarray
 
         ArrayList<MeanMultiThread> threads= new ArrayList<>();
         for(ArrayList<Integer> u: subArrays) {
             threads.add(new MeanMultiThread(u));
         }
-        System.out.println("ADDED THREADS\n");
-
-        //Tip: you can't create big number of threads in the above way. So, create an array list of threads.
 
 		// TODO: start each thread to execute your computeMean() function defined under the run() methods
-		   //so that the N mean values can be computed. for example,
+
         for(MeanMultiThread m: threads) {
             m.start(); //start thread1 on from run() function
         }
@@ -71,7 +70,7 @@ class MeanThread {
         }
 
 		// TODO: store the temporal mean values in a new array so that you can use that
-		    /// array to compute the global mean.
+        /// array to compute the global mean.
         // DONE
 
 		// TODO: compute the global mean value from N mean values.
@@ -83,25 +82,25 @@ class MeanThread {
 		// TODO: stop recording time and compute the elapsed time
         long timeTaken = System.nanoTime()-initTime;
 		System.out.println("The global mean value is ... "+globMean);
-        System.out.println("\nTime taken: "+(timeTaken/1000000000.0)+" seconds");
+        System.out.println("\nRunning time is "+(timeTaken/1000000.0)+" milliseconds");
+        System.out.println("Number of threads: "+args[1]);
 
 	}
 }
 //Extend the Thread class
 class MeanMultiThread extends Thread {
 	private ArrayList<Integer> list;
-	private double mean;
 
-	public ArrayList<Integer> getInternal(){
-	    return list;
-    }
+	private double mean;
 
 	MeanMultiThread(ArrayList<Integer> array) {
 		list = array;
 	}
+
 	public double getMean() {
 		return mean;
 	}
+
 	public void run() {
 		// TODO: implement your actions here, e.g., computeMean(...)
 		mean = computeMean(list);
