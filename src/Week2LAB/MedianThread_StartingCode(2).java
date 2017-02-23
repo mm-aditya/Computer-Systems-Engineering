@@ -18,50 +18,47 @@ class MedianThread {
 			text.add(sc.nextInt());
 		}
 
-	// define number of threads
-	int NumOfThread = Integer.valueOf(args[1]);// this way, you can pass number of threads as
-	     // a second command line argument at runtime.
+		// define number of threads
+		int NumOfThread = Integer.valueOf(args[1]);// this way, you can pass number of threads as
+												   // a second command line argument at runtime.
 
-	// TODO: partition the array list into N subArrays, where N is the number of threads
-	ArrayList<ArrayList<Integer>> subArrays = new ArrayList<>();
-	int ctr=0;
-	int flag =0;
-	System.out.println("Text size is: "+text.size());
-	while(flag==0) {
-		ArrayList<Integer> temp = new ArrayList<>();
-		for (int i = 0; i < text.size()/NumOfThread; i++) {
-			temp.add(text.get(ctr));
-			ctr++;
+		// TODO: partition the array list into N subArrays, where N is the number of threads
+		ArrayList<ArrayList<Integer>> subArrays = new ArrayList<>();
+		int ctr=0;
+		int flag =0;
+		while(flag==0) {
+			ArrayList<Integer> temp = new ArrayList<>();
+			for (int i = 0; i < text.size()/NumOfThread; i++) {
+				temp.add(text.get(ctr));
+				ctr++;
+			}
+			subArrays.add(temp);
+			if(ctr==text.size())
+				flag=1;
 		}
-		subArrays.add(temp);
-		if(ctr==text.size())
-			flag=1;
-	}
-		System.out.println("DONE PARTITIONING");
 
 
-	// TODO: start recording time
-	long initTime = System.nanoTime();
-	// TODO: create N threads and assign subArrays to the threads so that each thread sorts
-	    // its repective subarray. For example,
+		// TODO: start recording time
+		long initTime = System.nanoTime();
 
-	ArrayList<MedianMultiThread> threads= new ArrayList<>();
-	for(ArrayList<Integer> u: subArrays) {
-		threads.add(new MedianMultiThread(u));
-	}
-		System.out.println("ADDED THREADS");
-	//Tip: you can't create big number of threads in the above way. So, create an array list of threads.
+		// TODO: create N threads and assign subArrays to the threads
 
-	// TODO: start each thread to execute your sorting algorithm defined under the run() method, for example,
+		ArrayList<MedianMultiThread> threads= new ArrayList<>();
+		for(ArrayList<Integer> u: subArrays) {
+			threads.add(new MedianMultiThread(u));
+		}
+		//Tip: you can't create big number of threads in the above way. So, create an array list of threads.
+
+
+		// TODO: start each thread to execute your sorting algorithm defined under the run() method, for example,
 		for(MedianMultiThread m: threads) {
-		m.start(); //start thread1 on from run() function
+			m.start();
 		}
-		for(MedianMultiThread m: threads) {
-			m.join(); //start thread1 on from run() function
+			for(MedianMultiThread m: threads) {
+			m.join();
 		}
 
-
-	// TODO: use any merge algorithm to merge the sorted subarrays and store it to another array, e.g., sortedFullArray.
+		// TODO: use any merge algorithm to merge the sorted subarrays and store it to another array, e.g., sortedFullArray.
 		Integer[] bigArray = new Integer[text.size()];
 		Integer[] tempArray = new Integer[text.size()];
 		int alen = 0;
@@ -72,18 +69,19 @@ class MedianThread {
 			alen = alen+m.getInternal().length;
 		}
 
-	//TODO: get median from sortedFullArray
+		//TODO: get median from sortedFullArray
 		double median = computeMedian(bigArray);
 
-	// TODO: stop recording time and compute the elapsed time
+		// TODO: stop recording time and compute the elapsed time
 		long runningTime = (System.nanoTime() - initTime);
 
-	// TODO: printout the final sorted array
+		// TODO: printout the final sorted array
 		System.out.println(Arrays.toString(bigArray));
 
-	// TODO: printout median
-	System.out.println("The Median value is "+median);
-	System.out.println("Running time is " + runningTime/1000000000.0 + " seconds\n");
+		// TODO: printout median
+		System.out.println("The Median value is "+median);
+		System.out.println("Running time is " + runningTime/1000000.0 + " milliseconds\n");
+		System.out.println("Number of threads: "+args[1]);
 	}
 
 
@@ -151,7 +149,7 @@ class MedianMultiThread extends Thread {
 		}
 	}
 
-		private static Integer[] extract(Integer[] elts, Integer start, Integer last) {
+	private static Integer[] extract(Integer[] elts, Integer start, Integer last) {
 			Integer[] ret = new Integer[last - start];
 			for(int i = 0; i < ret.length; i++) ret[i] = elts[start + i];
 			return ret;
