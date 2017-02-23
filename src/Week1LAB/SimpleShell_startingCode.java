@@ -21,6 +21,9 @@ class SimpleShell {
 			String[] commands = commandLine.split(" ");
 
 
+
+
+
             // TODO: adding a history feature
 
 			// if the user entered a return, just loop again
@@ -46,6 +49,13 @@ class SimpleShell {
                 else
                     System.out.println("There are no commands in history");
             }
+
+
+
+
+
+
+
 
 			switch(commands[0]) {
                 case "!!":
@@ -111,6 +121,8 @@ class SimpleShell {
                                         System.out.println("This directory does not exist!");
                                     break;
                         }
+
+                        // CHECKING GIT
                         pb.directory(currentWorkingdir);
                         Process p = pb.start();
                         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -134,9 +146,6 @@ class SimpleShell {
                     break;
 
             }
-
-
-
 
 		}
 	}
