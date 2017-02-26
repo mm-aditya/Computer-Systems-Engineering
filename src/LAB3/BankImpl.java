@@ -88,24 +88,25 @@ public class BankImpl {
 		System.out.println("\n");
 
 		// TODO: check if request larger than need
-		if(lessThan(need[customerNumber],request))
+		if(!lessThan(request,need[customerNumber]))
 			return false;
-		System.out.println("need smaller than request!");
+		//System.out.println("need smaller than request!");
 
 		// TODO: check if request larger than available
-		if(lessThan(available,request))
+		if(!lessThan(request,available))
 			return false;
-		System.out.println("Available smaller than request");
+		//System.out.println("Available smaller than request");
 
 		// TODO: check if the state is safe or not
 		if(!checkSafe(customerNumber,request))
 			return false;
 
-		System.out.println("allocatin");
+		//System.out.println("allocatin");
 		// TODO: if it is safe, allocate the resources to customer customerNumber
 		for(int i =0; i < numberOfResources;i++) {
-			allocation[customerNumber][i] = request[i];
-			need[customerNumber][i] = maximum[customerNumber][i] - allocation[customerNumber][i];
+			available[i] = available[i] - request[i];
+			allocation[customerNumber][i] = allocation[customerNumber][i] + request[i];
+			need[customerNumber][i] = need[customerNumber][i] - request[i];
 		}
 		return true;
 	}
@@ -127,14 +128,13 @@ public class BankImpl {
 
 	private synchronized boolean checkSafe(int customerNumber, int[] request) {
 		// TODO: check if the state is safe
-		int[] curravailable = new int[numberOfResources];
+		int[] curravailable = available.clone();
 		int[][] currneed = need.clone();
 		int[][] currallocation = allocation.clone();
 		boolean[] finish = new boolean[numberOfCustomers];
 		for(int i = 0; i < numberOfCustomers;i++)
 			finish[i] = false;
 		boolean possible = true;
-
 
 		for(int i =0;i<numberOfResources;i++)
 			curravailable[i] = available[i] - request[i];
