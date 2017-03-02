@@ -128,12 +128,35 @@ public class BankImpl {
 
 	private synchronized boolean checkSafe(int customerNumber, int[] request) {
 		// TODO: check if the state is safe
-		int[] curravailable = available.clone();
-		int[][] currneed = need.clone();
-		int[][] currallocation = allocation.clone();
-		boolean[] finish = new boolean[numberOfCustomers];
+//		int[] curravailable = available.clone();
+//		int[][] currneed = need.clone();
+//		int[][] currallocation = allocation.clone();
+//		boolean[] finish = new boolean[numberOfCustomers];
+
+		int[] curravailable = new int[10];
+		int[][] currneed = new int[10][10];
+		int[][] currallocation = new int[10][10];
+		int[] work = new int[10];
+		boolean[] finish = new boolean[10];
+
+		for(int a = 0; a < this.numberOfResources; a++){
+			curravailable[a] = this.available[a] - request[a];
+			work[a] = curravailable[a];
+			for(int i = 0; i < numberOfCustomers; i++){
+				if (i == customerNumber){
+					currneed[customerNumber][a] = this.need[customerNumber][a] - request[a];
+					currallocation[customerNumber][a] = this.allocation[customerNumber][a] + request[a];
+				}
+				else{
+					currneed[i][a] = this.need[i][a];
+					currallocation[i][a] = this.allocation[i][a];
+				}
+			}
+		}
+
 		for(int i = 0; i < numberOfCustomers;i++)
 			finish[i] = false;
+
 		boolean possible = true;
 
 		for(int i =0;i<numberOfResources;i++)
@@ -146,14 +169,13 @@ public class BankImpl {
 			currallocation[customerNumber][i] = allocation[customerNumber][i] + request[i];
 		}
 
-		int[] work = curravailable;
 
 		while(possible){
 			//System.out.println("running this!");
 			//System.out.println(numberOfCustomers);
 			possible = false;
 			for(int i =0; i < numberOfCustomers;i++){
-				if(finish[i] == false && lessThan(currneed[i],work)){
+				if(!finish[i] && lessThan(currneed[i],work)){
 					possible = true;
 					for(int k =0; k < numberOfResources;k++)
 						work[k]+=currallocation[i][k];
@@ -164,7 +186,7 @@ public class BankImpl {
 
 		boolean res = true;
 		for(int i = 0; i < numberOfCustomers;i++){
-			if(finish[i] == false)
+			if(!finish[i])
 				res = !res;
 		}
 		return res;
