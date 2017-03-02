@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-public class FileOperation {
+class FileOperation {
 
     private static File currentDirectory = new File(System.getProperty("user.dir") + "\\src");
     private static int parentDepth;
@@ -120,7 +120,7 @@ public class FileOperation {
      // @param dir - current working directory
      // @param command - name of the file to be created
      */
-    public static void Java_create(File dir, String name) throws IOException{
+    private static void Java_create(File dir, String name) throws IOException{
         // TODO: create a file
         try {
             File file = new File(dir, name);
@@ -135,7 +135,7 @@ public class FileOperation {
      * @param dir - current working directory
      * @param name - name of the file to be deleted
      */
-    public static void Java_delete(File dir, String name) {
+    private static void Java_delete(File dir, String name) {
         // TODO: delete a file
         File file = new File(dir, name);
         file.delete();
@@ -146,7 +146,7 @@ public class FileOperation {
      * @param dir - current working directory
      * @param name - name of the file to be displayed
      */
-    public static void Java_cat(File dir, String name) throws Exception{
+    private static void Java_cat(File dir, String name) throws Exception{
         // TODO: display a file
         File file = new File(dir, name);
         try {
@@ -203,7 +203,7 @@ public class FileOperation {
      * @param display_method - control the list type
      * @param sort_method - control the sort type
      */
-    public static void Java_ls(File dir, String display_method, String sort_method) {
+    private static void Java_ls(File dir, String display_method, String sort_method) {
         // TODO: list files
         File[] list	= dir.listFiles();
 
@@ -218,7 +218,7 @@ public class FileOperation {
         else{
             for	(File file: list) {
                 Date date = new Date(file.lastModified());
-                System.out.println(String.format("%s\tSize: %d\tLast Modified: %s",file.getName(),file.length(),date.toString()));
+                System.out.println(String.format("%-20s\tSize: %-10d\tLast Modified: %s",file.getName(),file.length(),date.toString()));
             }
         }
 
@@ -230,7 +230,7 @@ public class FileOperation {
      * @param name - input string to find in file's name
      * @return flag - whether the input string is found in this directory and its subdirectories
      */
-    public static boolean Java_find(File dir, String name) {
+    private static boolean Java_find(File dir, String name) {
         boolean flag = false;
         // TODO: find files
         if(!dir.isDirectory() && dir.getName().contains(name)) {
@@ -251,7 +251,7 @@ public class FileOperation {
      * @param depth - maximum sub-level file to be displayed
      * @param sort_method - control the sort type
      */
-    public static void Java_tree(File dir, int depth, String sort_method) {
+    private static void Java_tree(File dir, int depth, String sort_method) {
         // TODO: print file tree
         File[] list = dir.listFiles();
         String op;
@@ -272,7 +272,7 @@ public class FileOperation {
     }
 
     // TODO: define other functions if necessary for the above functions
-    public static String spaceMaker(int n){
+    private static String spaceMaker(int n){
         String op = "";
         for(int i =parentDepth; i > n;i--)
             op = op+" ";
