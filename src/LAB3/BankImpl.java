@@ -132,12 +132,11 @@ public class BankImpl {
 //		int[][] currneed = need.clone();
 //		int[][] currallocation = allocation.clone();
 //		boolean[] finish = new boolean[numberOfCustomers];
-
-		int[] curravailable = new int[10];
 		int[][] currneed = new int[10][10];
+		int[] curravailable = new int[10];
 		int[][] currallocation = new int[10][10];
-		int[] work = new int[10];
 		boolean[] finish = new boolean[10];
+		int[] work = new int[10];
 
 		for(int a = 0; a < this.numberOfResources; a++){
 			curravailable[a] = this.available[a] - request[a];

@@ -19,11 +19,6 @@ class SimpleShell {
 			if(!commandLine.equals("history"))
 			    cmdhist.add(commandLine);
 			String[] commands = commandLine.split(" ");
-
-
-
-
-
             // TODO: adding a history feature
 
 			// if the user entered a return, just loop again
@@ -49,10 +44,6 @@ class SimpleShell {
                 else
                     System.out.println("There are no commands in history");
             }
-
-
-
-
 
 
 
