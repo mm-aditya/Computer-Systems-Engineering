@@ -58,15 +58,23 @@ class FileOperation {
             //System.out.println(command);
             switch(command.get(0)) {
                 case "create": // TODO: implement code to handle create here
+                    if (command.get(1)==null)
+                        System.out.println("NO FILE NAME SPECIFIED");
                     Java_create(currentDirectory, command.get(1));
                     break;
 
                 case "delete":// TODO: implement code to handle delete here
+                    if (command.get(1)==null)
+                        System.out.println("NO FILE NAME SPECIFIED");
                     Java_delete(currentDirectory, command.get(1));
                     break;
 
                 case "display":// TODO: implement code to handle display here
-                    Java_cat(currentDirectory,command.get(1));
+                    if (command.get(1)==null)
+                        System.out.println("NO FILE NAME SPECIFIED");
+                    else {
+                        Java_cat(currentDirectory, command.get(1));
+                    }
                     break;
 
                 case "list":// TODO: implement code to handle list here
@@ -79,11 +87,16 @@ class FileOperation {
                     break;
 
                 case "tree":// TODO: implement code to handle tree here
+                    int depth;
+                    if(command.get(1) == null)
+                        depth = 1;
+                    else
+                        depth = Integer.parseInt(command.get(1));
                     if(command.get(1) != null)
                         parentDepth =  Integer.parseInt(command.get(1));
                     else
                         parentDepth = 1;
-                    Java_tree(currentDirectory, Integer.parseInt(command.get(1)),command.get(2));
+                    Java_tree(currentDirectory, depth,command.get(2));
                     break;
 
                 // other commands
