@@ -76,18 +76,22 @@ public class TextEncryptionStartingCode {
 
         byte[] smallEncrypted = encrypted.clone();
 
-
+        /*
+        SECTION FOR LARGE TEXT FILE
+         */
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("STARTING LARGE FILE ENCRYPTION NOW");
 
         bufferedReader = new BufferedReader(new FileReader(System.getProperty("user.dir")+"/src/NetWorkLab2/TextFiles/" + args[1])); //args[0] is the file you are going to encrypt.
         while ((line = bufferedReader.readLine()) != null) {
             data = data + "\n" + line;
         }
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Original File is: ");
-        //TODO: Print to screen contents of the file
-        if(data!=null)
-            System.out.println(data);
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//        System.out.println("Original File is: ");
+//        //TODO: Print to screen contents of the file
+//        if(data!=null)
+//            System.out.println(data);
 
         //TODO: generate secret key using DES algorithm
         genKey();
@@ -118,10 +122,10 @@ public class TextEncryptionStartingCode {
         output = new String(decrypted);
 
         //TODO: print the decrypted String text and compare it with original text
-        System.out.println(" ");
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Decrypted text is: ");
-        System.out.println(output);
+//        System.out.println(" ");
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//        System.out.println("Decrypted text is: ");
+//        System.out.println(output);
 
         System.out.println(" ");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
